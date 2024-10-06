@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Login</title>
+
+    <style>
+       /* Background image with low opacity */
+       body {
+    position: relative; /* Required for absolute positioning of overlay */
+    height: 100vh; /* Full height of the viewport */
+    overflow: hidden; /* Hide overflow */
+}
+
+/* Pseudo-element for the background image */
+body::before {
+    content: ""; /* Necessary for pseudo-element */
+    background-image: url('/static/text_photo.jpeg'); /* Background image */
+    background-size: cover; /* Cover the entire page */
+    background-position: center; /* Center the image */
+    position: absolute; /* Position it absolutely */
+    top: 0; /* Fill from the top */
+    left: 0; /* Fill from the left */
+    right: 0; /* Fill to the right */
+    bottom: 0; /* Fill to the bottom */
+    opacity: 0.3; /* Adjust opacity to increase transparency */
+    z-index: 0; /* Ensure it's behind the content */
+}
+
+/* Overlay to darken the background */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Black overlay with 50% opacity */
+    z-index: 1; /* Ensure overlay is on top */
+}
+
+/* Center the container */
+.container {
+    position: relative; /* Position relative to overlay */
+    z-index: 2; /* Ensure container is above overlay */
+    max-width: 400px; /* Optional: Limit width */
+    margin: auto; /* Center the container */
+    padding: 20px; /* Add padding */
+    background-color: rgb(255, 255, 255); /* Background for form */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Shadow effect */
+}
+
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h2 class="my-4 text-center">Login</h2>
+        <form action="{{ url_for('login') }}" method="POST">
+            <!-- Email input -->
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input type="email" name="email" class="form-control" id="form2Example1" required />
+                <label class="form-label" for="form2Example1">Email address</label>
+            </div>
+
+            <!-- Password input -->
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input type="password" name="password" class="form-control" id="form2Example2" required />
+                <label class="form-label" for="form2Example2">Password</label>
+            </div>
+
+            <!-- 2 column grid layout for inline styling -->
+            <div class="row mb-4">
+                <div class="col d-flex justify-content-center">
+                    <!-- Checkbox -->
+                    <!-- <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
+                        <label class="form-check-label" for="form2Example31"> Remember me </label>
+                    </div> -->
+                </div>
+
+                <!-- <div class="col">
+                    
+                    <a href="#!">Forgot password?</a>
+                </div> -->
+            </div>
+
+            <!-- Submit button -->
+            <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4">Sign in</button>
+
+            <!-- Register buttons -->
+            <div class="text-center">
+                <p>Not a member? <a href="{{ url_for('signup') }}">Register</a></p>
+                <!-- <p>or sign up with:</p> -->
+                <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
+                    <i class="fab fa-facebook-f"></i>
+                </button>
+
+                <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
+                    <i class="fab fa-google"></i>
+                </button>
+
+                <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
+                    <i class="fab fa-twitter"></i>
+                </button>
+
+                <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
+                    <i class="fab fa-github"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
