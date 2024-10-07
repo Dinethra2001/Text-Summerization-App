@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Summarization</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+        .row {
+            margin-bottom: 30px;
+        }
+        textarea {
+            width: 100%;
+            height: 400px; /* Increased height for the text area */
+        }
+        input.short {
+            height: 40px; /* Fixed height for link input */
+            width: 100%;
+        }
+        .box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            position: relative;
+        }
+        .section-title {
+            margin-top: 0;
+            margin-bottom: 20px; 
+        }
+        .box-title {
+            margin-bottom: 20px; 
+        }
+        .btn-toggle {
+            margin: 5px;
+            color: white;
+            background-color: blue;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 15px; /* Rounded corners */
+            transition: background-color 0.3s;
+        }
+        .btn-active {
+            background-color: red; /* Active button color */
+        }
+        .button-container {
+            display: flex;
+            justify-content: center; /* Center the buttons */
+            margin-bottom: 15px; /* Space between buttons and text area */
+        }
+        /* Hide additional sections initially */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Text Summarization</h1>
+        <div class="row">
+            <div class="col-md-12 box">
+                <div class="button-container">
+                    <button type="button" class="btn-toggle btn-active" id="text-btn">Text</button>
+                    <button type="button" class="btn-toggle" id="link-btn">Link</button>
+                </div>
+                <form id="inputForm">
+                    <div class="form-group">
+                        <label for="user_input" id="input-label">Enter text to summarize:</label>
+                        <textarea class="form-control" id="user_input" name="user_input" placeholder="Enter your text here..."></textarea>
+                        <input type="url" class="form-control short d-none" id="user_link" name="user_link" placeholder="Enter a link here...">
+                    </div>
+                    <button type="button" class="btn btn-primary btn-block" id="summarize-btn">Summarize</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Summarized Text and Sentiment Analysis Section -->
+        <div class="row hidden" id="additional-sections">
+            <div class="col-md-5 box mr-auto">
+                <h2 class="text-center box-title">Summarized Text</h2>
+                <textarea class="form-control" id="output" readonly></textarea>
+            </div>
+            <div class="col-md-5 box ml-auto">
+                <h2 class="text-center box-title">Sentiment Analysis</h2>
+                <textarea class="form-control" id="sentiment_output" readonly></textarea>
+            </div>
+        </div>
+
+        <!-- Topic Modeling and Keyword Analysis Section -->
+        <div class="row hidden" id="topic-keyword-sections">
+            <div class="col-md-5 box mr-auto">
+                <h2 class="text-center box-title">Topic Modeling</h2>
+                <label for="topic_output">Topics:</label>
+                <textarea class="form-control" id="topic_output" readonly></textarea>
+            </div>
+            <div class="col-md-5 box ml-auto">
+                <h2 class="text-center box-title">Keyword Analysis</h2>
+                <label for="keyword_output">Keywords:</label>
+                <textarea class="form-control" id="keyword_output" readonly></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        const textBtn = document.getElementById('text-btn');
+        const linkBtn = document.getElementById('link-btn');
+        const textArea = document.getElementById('user_input');
+        const linkInput = document.getElementById('user_link');
+        const inputLabel = document.getElementById('input-label');
+        const additionalSections = document.getElementById('additional-sections');
+        const topicKeywordSections = document.getElementById('topic-keyword-sections');
+
+        // Set default state for buttons
+        textBtn.classList.add('btn-active');
+
+        // Show text input, hide link input
+        textBtn.addEventListener('click', function() {
+            // Clear previous inputs and outputs
+            textArea.value = '';          // Clear text area
+            linkInput.value = '';         // Clear link input
+            $("#output").val('');         // Clear output text area
+            $("#sentiment_output").val(''); // Clear sentiment analysis area
+            $("#topic_output").val('');    // Clear topic modeling area
+            $("#keyword_output").val('');   // Clear keyword analysis area
+
+            // Hide additional sections
+            additionalSections.classList.add('hidden');
+            topicKeywordSections.classList.add('hidden');
+
+            // Show text input, hide link input
+            textArea.classList.remove('d-none');
+            linkInput.classList.add('d-none');
+            inputLabel.innerText = 'Enter text to summarize:';
+            
+            // Highlight active button
+            textBtn.classList.add('btn-active');
+            linkBtn.classList.remove('btn-active');
+        });
+
+        // Show link input, hide text input
+        linkBtn.addEventListener('click', function() {
+            // Clear previous inputs and outputs
+            textArea.value = '';          // Clear text area
+            linkInput.value = '';         // Clear link input
+            $("#output").val('');         // Clear output text area
+            $("#sentiment_output").val(''); // Clear sentiment analysis area
+            $("#topic_output").val('');    // Clear topic modeling area
+            $("#keyword_output").val('');   // Clear keyword analysis area
+
+            // Hide additional sections
+            additionalSections.classList.add('hidden');
+            topicKeywordSections.classList.add('hidden');
+
+            // Show link input, hide text input
+            textArea.classList.add('d-none');
+            linkInput.classList.remove('d-none');
+            inputLabel.innerText = 'Enter a link to summarize:';
+            
+            // Highlight active button
+            linkBtn.classList.add('btn-active');
+            textBtn.classList.remove('btn-active');
+        });
+
+        // Handle Summarize button click
+        document.getElementById('summarize-btn').addEventListener('click', function() {
+            const userInput = textArea.value;
+            const userLink = linkInput.value;
+            const data = userInput ? { user_input: userInput } : { user_link: userLink };
+
+            // Send AJAX request
+            $.ajax({
+                url: "{{ url_for('summarize') }}",
+                type: "POST",
+                data: data,
+                success: function(response) {
+                    // Show additional sections
+                    additionalSections.classList.remove('hidden');
+                    topicKeywordSections.classList.remove('hidden');
+                    
+                    // Populate the outputs with response data
+                    $("#output").val(response.summary);
+                    $("#sentiment_output").val(response.sentiment);
+                    $("#topic_output").val(response.topics);
+                    $("#keyword_output").val(response.keywords);
+                },
+                error: function(xhr, status, error) {
+                    alert("An error occurred: " + error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

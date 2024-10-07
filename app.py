@@ -3,6 +3,7 @@ from flask_pymongo import PyMongo
 from flask_bcrypt import Bcrypt
 from bson.objectid import ObjectId
 
+
 app = Flask(__name__)
 app.secret_key = 'J3wL9kzF7vYqXgH6!@$BzP9rT2lQmN'
 
@@ -35,16 +36,17 @@ def signup():
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
         # Insert user into MongoDB
-        users.insert_one({
+        user_id = users.insert_one({
             'username': username,
             'email': email,
             'password': hashed_password
-        })
+        }).inserted_id  # Get the user ID
 
         flash('Account created successfully! You can log in now.', 'success')
         return redirect(url_for('login'))
 
     return render_template('signup.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -57,20 +59,46 @@ def login():
         # Check if user exists and password is correct
         if user and bcrypt.check_password_hash(user['password'], password):
             session['username'] = user['username']
+            session['user_id'] = str(user['_id'])  # Store user ID in session
             flash(f'Welcome back, {user["username"]}!', 'success')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('summarize'))
         else:
             flash('Invalid login credentials', 'danger')
             return redirect(url_for('login'))
 
     return render_template('login.html')
 
-@app.route('/dashboard')
-def dashboard():
+
+@app.route('/summarize', methods=['GET', 'POST'])
+def summarize():
     if 'username' in session:
-        return f"Hello, {session['username']}! Welcome to your dashboard."
+        if request.method == 'POST':
+            user_input = request.form.get('user_input')  # Get the text input
+            user_link = request.form.get('user_link')    # Get the link input
+            
+            # Check which input was provided and save accordingly
+            if user_input:
+                mongo.db.user_inputs.insert_one({
+                    'user_id': session['user_id'],  # Save user ID
+                    'input_type': 'text',
+                    'input_value': user_input
+                })
+            elif user_link:
+                mongo.db.user_inputs.insert_one({
+                    'user_id': session['user_id'],  # Save user ID
+                    'input_type': 'link',
+                    'input_value': user_link
+                })
+
+            flash('Input saved successfully!', 'success')
+            return render_template('summerization.html')
+
+        return render_template('summerization.html')
     else:
         return redirect(url_for('login'))
+
+
+
 
 @app.route('/logout')
 def logout():
