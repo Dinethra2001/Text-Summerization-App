@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.secret_key = 'J3wL9kzF7vYqXgH6!@$BzP9rT2lQmN'
 
 # MongoDB configuration
-app.config['MONGO_URI'] = "mongodb+srv://IRWA:Irwa%40123@cluster1.71el3.mongodb.net/Text_Summarization"  
+app.config['MONGO_URI'] = "mongodb+srv://IRWA:Irwa%40123@cluster0.mgts3.mongodb.net/Text_Summarization"  
 mongo = PyMongo(app)
 bcrypt = Bcrypt(app)
 
