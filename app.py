@@ -15,6 +15,7 @@ bcrypt = Bcrypt(app)
 # Collection (table) reference
 users = mongo.db.signup
 
+
 @app.route('/')
 def home():
     return render_template('login.html')
