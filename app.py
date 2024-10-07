@@ -1,7 +1,8 @@
-from flask import Flask, render_template, redirect, url_for, request, session, flash
+from flask import Flask, render_template, redirect, url_for, request, session, flash, jsonify
 from flask_pymongo import PyMongo
 from flask_bcrypt import Bcrypt
 from bson.objectid import ObjectId
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -18,6 +19,7 @@ users = mongo.db.signup
 @app.route('/')
 def home():
     return render_template('login.html')
+    
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -106,5 +108,40 @@ def logout():
     flash('You have been logged out.', 'success')
     return redirect(url_for('login'))
 
+
+# Route to fetch summary history
+#@app.route('/get_summary_history', methods=['GET'])
+#def get_summary_history():
+    #user_id = session.get('user_id')  # Assuming user_id is stored in session after login
+    #if user_id:
+        #summaries = list(db.summaries.find({"user_id": user_id}, {"_id": 0, "summary_text": 1, "date": 1}))
+        #for summary in summaries:
+            #summary['date'] = summary.get('date', datetime.now()).strftime('%Y-%m-%d %H:%M:%S')
+        #return jsonify({'summaries': summaries})
+    #return jsonify({'summaries': []})
+
+    
+# Route to fetch user inputs
+@app.route('/get_user_inputs', methods=['GET'])
+def get_user_inputs():
+    user_id = session.get('user_id')  # Assuming you store user_id in session after login
+    if user_id:
+        # Retrieve input values without the date
+        inputs = list(mongo.db.user_inputs.find({"user_id": user_id}, {"_id": 0, "input_value": 1, "input_type": 1}))
+        return jsonify({'inputs': [{'input_value': input['input_value'], 'input_type': input['input_type']} for input in inputs]})
+    return jsonify({'inputs': []})
+
+
+@app.route('/history')
+def history():
+    if 'user_id' in session:
+        return render_template('history.html')
+    return "Unauthorized", 401
+
+@app.errorhandler(404)
+def not_found(error):
+    return "Not Found", 404
+
 if __name__ == '__main__':
     app.run(debug=True)
+

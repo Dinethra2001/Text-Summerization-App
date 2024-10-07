@@ -1,0 +1,55 @@
+/* history.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e3f2fd; /* Lighter blue for the background */
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#input-history {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card {
+    background-color: #ffffff; /* White background for cards */
+    border: 1px solid #ddd; /* Light border */
+    border-radius: 8px; /* Slightly more rounded corners */
+    padding: 15px;
+    margin: 10px 0; /* Vertical margin only */
+    width: 90%; /* Width of the card */
+    max-width: 600px; /* Maximum width */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Deeper shadow for better depth */
+    transition: transform 0.2s; /* Animation for hover effect */
+}
+
+.card:hover {
+    transform: scale(1.02); /* Slight zoom effect on hover */
+}
+
+.card-body {
+    padding: 10px;
+}
+
+.card-title {
+    font-weight: bold;
+    color: #007bff; /* Bootstrap primary color */
+    margin-bottom: 10px; /* Space below title */
+}
+
+.card-text {
+    color: #555; /* Darker gray for text */
+}
+
+.no-inputs {
+    color: #888; /* Lighter gray for "no inputs" message */
+    text-align: center; /* Center the no-inputs message */
+}
