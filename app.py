@@ -79,47 +79,68 @@ def summarize():
             user_link = request.form.get('user_link')    # Get the link input
             max_length = int(request.form.get('max_length'))  # Get the max length input
 
-            # Determine pval based on the input type
-            pval = 1 if user_input else 0  # pval=1 for text, pval=0 for link
+            # Determine which input to process
+            if user_input and not user_link:  # Ensure user_input is provided and user_link is empty
+                input_val = user_input
+                pval = 1  # Indicates text 
+                input_type = 'Text'
+            elif user_link and not user_input:  # Ensure user_link is provided and user_input is empty                 #
+                input_val = user_link
+                pval = 0  # Indicates link input
+                input_type = 'Link'
+            else:
+                return jsonify({"error": "Invalid input."}), 400  # Handle error gracefully
 
-            # Use user_input if provided, otherwise fetch text from the URL
-            text_to_process = user_input if user_input else fetch_text_from_url(user_link)
-
-            if not text_to_process.strip():
+            if not input_val.strip():
                 return jsonify({"error": "No valid text provided."}), 400  # Handle error gracefully
 
             # Summarization
-            summary = summarize_text(text_to_process, max_length, pval)
+            pre_proccessed_txt, summary = summarize_text(input_val, max_length, pval)
 
             # Sentiment Analysis
-            sentiment = predict_sentiment_hf(text_to_process)
-            print("Sentiment output:", sentiment)  # Debugging line
+            sentiment = predict_sentiment_hf(summary)
+            print(f"sentiment :" ,sentiment)
 
-            # Check the output of sentiment analysis
-            if isinstance(sentiment, list) and len(sentiment) > 0:
-                sentiment_label = sentiment[0].get('label', 'No label')
-                sentiment_score = sentiment[0].get('score', 0)  # Use .get to avoid KeyError
+            if isinstance(sentiment, tuple) and len(sentiment) == 2:
+                sentiment_label = sentiment[0]  # The first element is the label
+                sentiment_score = sentiment[1]   # The second element is the score
             else:
                 sentiment_label = "No sentiment detected"
                 sentiment_score = 0
 
             # Keyword Extraction
-            keywords = extract_keywords(text_to_process)
+            keywords = extract_keywords(pre_proccessed_txt)
 
             # Topic Modeling
-            topics = topic_modeling(text_to_process)
+            topics = topic_modeling(pre_proccessed_txt)
 
-            # Return the results as a JSON response
+            document = {
+                'user_id': session['user_id'],
+                'input_type': input_type,
+                'input': input_val,
+                'summary': summary,
+                'sentiment': {
+                    'label': sentiment_label,
+                    'score': sentiment_score
+                },
+                'keywords': keywords,          
+                'topics': topics,               
+                'timestamp': datetime.now()     
+            }
+
+            # Insert the document into the MongoDB collection
+            mongo.db.user_input_tble.insert_one(document)
+
             return jsonify({
                 'summary': summary,
                 'sentiment': f"{sentiment_label}: {sentiment_score}",
                 'keywords': keywords,
                 'topics': topics
             })
-
+        
         return render_template('summerization.html')
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('login'))   
 
 @app.route('/logout')
 def logout():

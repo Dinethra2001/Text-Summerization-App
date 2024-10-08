@@ -71,9 +71,10 @@ summarizer_model = BartForConditionalGeneration.from_pretrained("facebook/bart-l
 # Function to summarize input text
 def summarize_text(text, max_len,pval):
 
-    if pval == 1:
+    print(" summarize_text function is called")
+    if pval == 0:
           # Fetch the text from the provided URL
-      text = fetch_text_from_url(text)
+        text = fetch_text_from_url(text)
 
     processed_text = preprocess_text_for_summarization(text)
 
@@ -82,13 +83,15 @@ def summarize_text(text, max_len,pval):
     summary = summarizer_tokenizer.decode(summary_ids[0], skip_special_tokens=True)
 
 
-    return text ,summary
+    return processed_text, summary
 
 
 #sentiment analysis
 
 # Function to predict sentiment for the generated summary
 def predict_sentiment_hf(text):
+
+    print(" predict_sentiment_hf function is called")
     """
     Predict the sentiment using a pre-trained Hugging Face model.
     Input: text (str): The summarized text for sentiment analysis.
@@ -125,6 +128,7 @@ stop_words = Stopwords.union(set(new_stop_words))
 
 def preprocess_text(txt):
 
+    print("preprocess_text func is called")
     # Lower case
     txt = txt.lower()
     # Remove HTML tags
@@ -169,6 +173,9 @@ def extract_keywords(user_input):
 #topic hadling
 
 def topic_modeling(text):
+
+    print("topic_modeling func is called")
+    # Preprocess the text
     stop_words = set(stopwords.words('english'))
     tokens = word_tokenize(text.lower())
     tokens = [word for word in tokens if word.isalnum() and word not in stop_words]
@@ -178,23 +185,18 @@ def topic_modeling(text):
     corpus = [dictionary.doc2bow(tokens)]
 
     # Create the LDA model
-    lda_model = gensim.models.ldamodel.LdaModel(corpus, num_topics=3, id2word=dictionary, passes=15)
+    lda_model = gensim.models.LdaModel(corpus, num_topics=1, id2word=dictionary, passes=15)
 
+    # Get the most representative topic
     topics = lda_model.print_topics(num_words=4)
+    
+    # Extract only the most prominent topic
+    most_representative_topic = topics[0]  # Get the first topic
 
-    # Formatting the topics for output
-    formatted_topics = []
-    for topic in topics:
-        topic_id, topic_words = topic
-        formatted_topics.append(f"Topic {topic_id + 1}: {topic_words}")
+    # Extract words from the most prominent topic
+    topic_words = most_representative_topic[1]  # Get the words and their weights
+    words = [word.split('*')[1].strip().strip('"') for word in topic_words.split('+')]  # Extract just the words
 
-    return formatted_topics
+    return words
 
-text = "https://en.wikipedia.org/wiki/Artificial_intelligence"
-text1 ,summary = summarize_text(text, 150,1)
 
-predict_sentiment_hf(summary)
-
-extract_keywords(text1)
-
-topic_modeling(text1)
