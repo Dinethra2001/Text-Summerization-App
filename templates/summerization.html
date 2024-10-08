@@ -86,19 +86,18 @@
                 <div class="button-container">
                     <button type="button" class="btn-toggle btn-active" id="text-btn">Text</button>
                     <button type="button" class="btn-toggle" id="link-btn">Link</button>
-                    <!-- Modify the History button to navigate to the history page -->
-                    <!--a href="{{ url_for('history') }}" class="btn-toggle btn-history" id="history-btn">History</a-->
                     <a href="/history" class="btn-toggle history-button">History</a>
-
                 </div>
                 <form id="inputForm">
                     <div class="form-group">
-                        <label for="user_input" id="input-label">Enter text to summarize:</label>
-                        <textarea class="form-control" id="user_input" name="user_input" placeholder="Enter your text here..."></textarea>
-                        <input type="url" class="form-control short d-none" id="user_link" name="user_link" placeholder="Enter a link here...">
+                        <label for="max_length">Enter Maximum Length:</label>
+                        <input type="number" class="form-control" id="max_length" name="max_length" placeholder="Enter maximum length..." min="1" required>
                     </div>
-                    <button type="button" class="btn btn-primary btn-block" id="summarize-btn">Summarize</button>
+                    <label for="user_input" id="input-label">Enter text to summarize:</label>
+                    <textarea class="form-control" id="user_input" name="user_input" placeholder="Enter your text here..."></textarea>
+                    <input type="url" class="form-control short d-none" id="user_link" name="user_link" placeholder="Enter a link here...">
                 </form>
+                <button type="button" class="btn btn-primary btn-block" id="summarize-btn">Summarize</button>
             </div>
         </div>
 
@@ -151,6 +150,7 @@
             $("#sentiment_output").val(''); // Clear sentiment analysis area
             $("#topic_output").val('');    // Clear topic modeling area
             $("#keyword_output").val('');   // Clear keyword analysis area
+            document.getElementById('max_length').value = ''; // Clear max length input
 
             // Hide additional sections
             additionalSections.classList.add('hidden');
@@ -175,6 +175,7 @@
             $("#sentiment_output").val(''); // Clear sentiment analysis area
             $("#topic_output").val('');    // Clear topic modeling area
             $("#keyword_output").val('');   // Clear keyword analysis area
+            document.getElementById('max_length').value = ''; // Clear max length input
 
             // Hide additional sections
             additionalSections.classList.add('hidden');
@@ -188,14 +189,14 @@
             // Highlight active button
             linkBtn.classList.add('btn-active');
             textBtn.classList.remove('btn-active');
-
         });
 
         // Handle Summarize button click
         document.getElementById('summarize-btn').addEventListener('click', function() {
             const userInput = textArea.value;
             const userLink = linkInput.value;
-            const data = userInput ? { user_input: userInput } : { user_link: userLink };
+            const maxLength = document.getElementById('max_length').value; // Get the maximum length
+            const data = userInput ? { user_input: userInput, max_length: maxLength } : { user_link: userLink, max_length: maxLength };
 
             // Send AJAX request
             $.ajax({
@@ -210,15 +211,14 @@
                     // Populate the outputs with response data
                     $("#output").val(response.summary);
                     $("#sentiment_output").val(response.sentiment);
-                    $("#topic_output").val(response.topics);
-                    $("#keyword_output").val(response.keywords);
+                    $("#topic_output").val(response.topics.join(', ')); // Assuming topics is a list
+                    $("#keyword_output").val(response.keywords.join(', ')); // Assuming keywords is a list
                 },
                 error: function(xhr, status, error) {
                     alert("An error occurred: " + error);
                 }
             });
         });
-
     </script>
 </body>
 </html>
