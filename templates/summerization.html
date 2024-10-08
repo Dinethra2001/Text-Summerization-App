@@ -47,8 +47,19 @@
             background-color: red; /* Active button color */
         }
 
-        .btn-history {
-            background-color: lightblue; /* Active button color */
+        a.history-button {
+            text-decoration: none;
+            color: white; /* Match the text color of other buttons */
+            background-color: #b3e0ff; /* Same background as before */
+            border: none;
+            padding: 10px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+        a.history-button:hover {
+            background-color: lightblue; /* Optional: Lighter shade on hover */
+            color: white; /* Ensure the text color remains the same */
+            text-decoration: none; /* Remove underline when hovering */
         }
 
         .button-container {
@@ -71,7 +82,8 @@
                     <button type="button" class="btn-toggle btn-active" id="text-btn">Text</button>
                     <button type="button" class="btn-toggle" id="link-btn">Link</button>
                     <!-- Modify the History button to navigate to the history page -->
-                    <a href="{{ url_for('history') }}" class="btn-toggle btn-history" id="history-btn">History</a>
+                    <!--a href="{{ url_for('history') }}" class="btn-toggle btn-history" id="history-btn">History</a-->
+                    <a href="/history" class="btn-toggle history-button">History</a>
 
                 </div>
                 <form id="inputForm">
