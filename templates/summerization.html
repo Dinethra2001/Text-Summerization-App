@@ -61,6 +61,11 @@
             color: white; /* Ensure the text color remains the same */
             text-decoration: none; /* Remove underline when hovering */
         }
+        
+        button:focus, button.active, a.history-button:focus, a.history-button.active {
+            border: 2px solid black; /* Black border on active/focus */
+            outline: none;
+        }
 
         .button-container {
             display: flex;
@@ -183,6 +188,7 @@
             // Highlight active button
             linkBtn.classList.add('btn-active');
             textBtn.classList.remove('btn-active');
+
         });
 
         // Handle Summarize button click
