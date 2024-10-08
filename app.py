@@ -133,11 +133,16 @@ def get_user_inputs():
     return jsonify({'inputs': []})
 
 
+    
 @app.route('/history')
 def history():
     if 'user_id' in session:
-        return render_template('history.html')
-    return "Unauthorized", 401
+        user_id = session['user_id']
+        user_summaries = mongo.db.summaries.find({'user_id': ObjectId(user_id)})
+        return render_template('history.html', summaries=user_summaries)
+    else:
+        flash('You must be logged in to view history.')
+        return redirect(url_for('login'))
 
 @app.errorhandler(404)
 def not_found(error):
@@ -145,4 +150,3 @@ def not_found(error):
 
 if __name__ == '__main__':
     app.run(debug=True)
-

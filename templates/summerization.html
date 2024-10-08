@@ -46,6 +46,11 @@
         .btn-active {
             background-color: red; /* Active button color */
         }
+
+        .btn-history {
+            background-color: lightblue; /* Active button color */
+        }
+
         .button-container {
             display: flex;
             justify-content: center; /* Center the buttons */
@@ -65,6 +70,9 @@
                 <div class="button-container">
                     <button type="button" class="btn-toggle btn-active" id="text-btn">Text</button>
                     <button type="button" class="btn-toggle" id="link-btn">Link</button>
+                    <!-- Modify the History button to navigate to the history page -->
+                    <a href="{{ url_for('history') }}" class="btn-toggle btn-history" id="history-btn">History</a>
+
                 </div>
                 <form id="inputForm">
                     <div class="form-group">
@@ -192,6 +200,7 @@
                 }
             });
         });
+
     </script>
 </body>
 </html>
