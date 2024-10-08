@@ -109,18 +109,6 @@ def logout():
     flash('You have been logged out.', 'success')
     return redirect(url_for('login'))
 
-
-# Route to fetch summary history
-#@app.route('/get_summary_history', methods=['GET'])
-#def get_summary_history():
-    #user_id = session.get('user_id')  # Assuming user_id is stored in session after login
-    #if user_id:
-        #summaries = list(db.summaries.find({"user_id": user_id}, {"_id": 0, "summary_text": 1, "date": 1}))
-        #for summary in summaries:
-            #summary['date'] = summary.get('date', datetime.now()).strftime('%Y-%m-%d %H:%M:%S')
-        #return jsonify({'summaries': summaries})
-    #return jsonify({'summaries': []})
-
     
 # Route to fetch user inputs
 @app.route('/get_user_inputs', methods=['GET'])
