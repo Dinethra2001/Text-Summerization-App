@@ -148,24 +148,35 @@ def logout():
     flash('You have been logged out.', 'success')
     return redirect(url_for('login'))
 
-# Route to fetch user inputs
 @app.route('/get_user_inputs', methods=['GET'])
 def get_user_inputs():
-    user_id = session.get('user_id')  # Assuming you store user_id in session after login
-    if user_id:
-        inputs = list(mongo.db.user_inputs.find({"user_id": user_id}, {"_id": 0, "input_value": 1, "input_type": 1}))
-        return jsonify({'inputs': [{'input_value': input['input_value'], 'input_type': input['input_type']} for input in inputs]})
-    return jsonify({'inputs': []})
+    if 'username' in session:
+        # Fetch user inputs from MongoDB for the logged-in user
+        user_id = session['user_id']
+        user_inputs = mongo.db.user_input_tble.find({'user_id': user_id}).sort('timestamp', -1)  # Sorting by timestamp in descending order
 
+        # Prepare a list of inputs to send as a response
+        inputs = []
+        for input_doc in user_inputs:
+            input_data = {
+                'input': input_doc['input'],
+                'summary': input_doc['summary'],
+                'sentiment': f"{input_doc['sentiment']['label']}: {input_doc['sentiment']['score']}",
+                'keywords': input_doc['keywords'],
+                'topics': input_doc['topics']
+            }
+            inputs.append(input_data)
+
+        return jsonify({'inputs': inputs})
+
+    else:
+        return jsonify({'error': 'User not logged in.'}), 401
+
+# Render history page with username
 @app.route('/history')
 def history():
-    if 'user_id' in session:
-        user_id = session['user_id']
-        user_summaries = mongo.db.summaries.find({'user_id': ObjectId(user_id)})
-        return render_template('history.html', summaries=user_summaries)
-    else:
-        flash('You must be logged in to view history.')
-        return redirect(url_for('login'))
+    username = session.get('username')  # Assuming username is stored in session
+    return render_template('history.html', username=username)
 
 @app.errorhandler(404)
 def not_found(error):

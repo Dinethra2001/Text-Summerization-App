@@ -1,62 +1,60 @@
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f5f5f5;
+html, body {
+    height: 100%;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa; /* Light background color */
 }
 
 .container {
-    background-color: white;
-    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full height of the viewport */
+    width: 100vw;  /* Full width of the viewport */
+}
+
+.form-container {
+    background: white;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    width: 100%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional shadow for the form */
+    padding: 20px;
+    max-width: 600px; /* Limit maximum width */
+    width: 100%;      /* Allow full width */
+}
+
+h1 {
     text-align: center;
 }
 
-h2 {
-    color: rgb(17, 13, 13);
-}
-
 label {
-    display: block;
     margin-top: 10px;
-    font-size: 14px;
-    color: rgb(0, 0, 0);
+    display: block;
 }
 
-input {
-    width: 100%;
+input[type="number"],
+textarea {
+    width: 100%; /* Full width */
     padding: 10px;
     margin-top: 5px;
-    margin-bottom: 15px;
-    border: 1px solid rgb(9, 5, 5);
-    border-radius: 4px;
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 4px; /* Rounded corners */
 }
 
 button {
-    background-color: rgb(0, 0, 0);
-    color: white;
+    margin-top: 20px;
     padding: 10px 20px;
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 16px;
 }
 
 button:hover {
-    background-color: #000000;
+    background-color: #0056b3; /* Darker blue on hover */
 }
-
-p {
-    margin-top: 15px;
-}
-
-a {
-    color: rgb(0, 0, 0);
-    text-decoration: none;
+.button-wrapper {
+    margin-top: 20px; /* Adjust the value as needed */
 }

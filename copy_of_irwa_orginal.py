@@ -106,7 +106,7 @@ def predict_sentiment_hf(text):
     # Extract the label (POSITIVE/NEGATIVE) and score
     sentiment = result[0]['label']
     confidence = result[0]['score']
-
+    confidence  = f"{round(confidence * 100, 2)}%"
     return sentiment, confidence
 
 
