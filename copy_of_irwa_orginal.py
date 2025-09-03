@@ -24,23 +24,6 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 
 
-
-# Function to fetch and extract text from a URL
-def fetch_text_from_url(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()  # Raise an error for bad responses
-        soup = BeautifulSoup(response.text, 'html.parser')
-
-        # Extract text from paragraphs
-        paragraphs = soup.find_all('p')
-        text = ' '.join([para.get_text() for para in paragraphs])
-        return text
-
-    except Exception as e:
-        print(f"Error fetching the URL: {e}")
-        return ""
-
 # Function to fetch and extract text from a URL
 def fetch_text_from_url(url):
     try:
