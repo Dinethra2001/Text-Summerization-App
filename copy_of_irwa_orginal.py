@@ -136,7 +136,7 @@ def extract_keywords(user_input):
     # Create a list containing the preprocessed input for TF-IDF
     docs = [preprocessed_text]
     # Initialize the TF-IDF vectorizer
-    vectorizer = TfidfVectorizer(max_features=15)  # Extract top 10 keywords based on TF-IDF
+    vectorizer = TfidfVectorizer(max_features=15)  # Extract top k keywords based on TF-IDF
     # Fit and transform the document into the TF-IDF matrix
     X = vectorizer.fit_transform(docs)
     # Get the feature names (i.e., the words)
